@@ -5,16 +5,20 @@ import src.main.java.com.keysoft.utils.Database;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("applications")
 @Produces("application/json")
 @Consumes("application/json")
 public class ApplicationResource {
+
+    Logger logger = Logger.getAnonymousLogger();
 
     @GET
     public Response getAll() { //http://localhost:8080/javaee-7.0/rest/applications
@@ -78,6 +82,36 @@ public class ApplicationResource {
         }
 
         return Response.status(201).build();
+    }
+
+    @PUT
+    public Response updateApplication(Application application) {
+        try {
+            Statement statement = Database.getConnection()
+                    .createStatement();
+            statement.executeUpdate("UPDATE tza_application SET name = '" + application.getName() + "', description = '" + application.getDescription() + "' WHERE id = " + application.getId());
+            logger.info("Application has been updated. New data is " + application.toString());
+        } catch(Exception exception) {
+            exception.printStackTrace();
+            return Response.status(403).build();
+        }
+        return Response.status(200).build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteApplication(@PathParam("id") int id) {
+        try {
+            Statement statement = Database.getConnection()
+                    .createStatement();
+            statement.executeUpdate("DELETE FROM tza_application WHERE id = " + id);
+            logger.info("Application with id " + id + " has been deleted.");
+        } catch(Exception exception) {
+            exception.printStackTrace();
+            return Response.status(403).build();
+        }
+
+        return Response.status(204).build();
     }
 
 }
