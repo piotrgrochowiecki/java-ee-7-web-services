@@ -61,4 +61,23 @@ public class ApplicationResource {
 
     }
 
+    @POST
+    public Response addApplication(Application application) {
+        try {
+            Statement statement = Database.getConnection()
+                    .createStatement();
+
+            statement.executeUpdate(
+                    "INSERT INTO tza_application VALUES (" + application.getId() + ",'" + application.getName() + "','" + application.getDescription() + "')");
+        } catch(SQLIntegrityConstraintViolationException exception) {
+            exception.printStackTrace();
+            return Response.status(409).build();
+        } catch(Exception exception) {
+            exception.printStackTrace();
+            return Response.status(403).build();
+        }
+
+        return Response.status(201).build();
+    }
+
 }
