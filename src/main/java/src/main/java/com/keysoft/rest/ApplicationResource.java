@@ -38,22 +38,27 @@ public class ApplicationResource {
 
     }
 
-    @POST
-    public Application addApplication(Application application) {
-        return application;
-    }
-
     @GET
     @Path("{id}")
-    public Application getApplication(@PathParam("id") int id) {
-        return new Application(id, "name " + id, "desc " + id);
-    }
+    public Response getApplication(@PathParam("id") int id) {
+        Application application = new Application();
 
-    @GET
-    @Path("{id}/{name}")
-    public Application getApplication(@PathParam("id") int id,
-                                      @PathParam("name") String name) {
-        return new Application(id, name + " " + id, "desc " + id);
+        try {
+            Statement statement = Database.getConnection()
+                    .createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM tza_application WHERE id = " + id);
+
+            while(resultSet.next()) {
+                application.setId(resultSet.getInt(1));
+                application.setName(resultSet.getString(2));
+                application.setDescription(resultSet.getString(3));
+            }
+        } catch(Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return Response.status(200).entity(application).build();
+
     }
 
 }
