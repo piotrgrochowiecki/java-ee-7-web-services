@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="javaee-7-web-services" />
+        <module name="javaee" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="javaee" target="11" />
+      <module name="javaee-7-web-services" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
